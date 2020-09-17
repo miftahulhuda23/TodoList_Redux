@@ -11,9 +11,9 @@ export const DeleteTodos = (id) => {
   };
 };
 
-export const UpdateTodos = (id) => {
+export const UpdateTodos = (values) => {
   return {
     type: actionTypes.UPDATE_TODOS,
-    payload: id,
+    payload: values,
   };
 };

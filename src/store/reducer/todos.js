@@ -16,7 +16,22 @@ const addTodo = (state, payload) => {
 
 const deleteItem = (state, payload) => {
   const updateArray = state.filter((item) => item.id !== payload);
-  return [...updateArray];
+  return updateArray;
+};
+
+const UpdateTodos = (state, payload) => {
+  console.log(payload);
+  const obj = {
+    Id: payload.Id,
+    Day: payload.values.Day,
+    Activies: payload.values.Activies,
+  };
+  const index = state.findIndex((item) => {
+    return item.id === obj.Id;
+  });
+  let newArr = [...state];
+  newArr[index] = obj;
+  return newArr;
 };
 
 const todos = (state = initialState, action) => {
@@ -27,7 +42,7 @@ const todos = (state = initialState, action) => {
     case actionTypes.DELETE_TODOS:
       return deleteItem(state, payload);
     case actionTypes.UPDATE_TODOS:
-      return state, payload;
+      return UpdateTodos(state, payload);
     default:
       return state;
   }

@@ -6,7 +6,7 @@ import { addTodos, DeleteTodos, UpdateTodos } from "../../store/action/todos";
 import Table from "../Table/Table";
 
 const Form = (props) => {
-  const { todos, addTodo, deleteTodo } = props;
+  const { todos, addTodo, deleteTodo, updateTodo } = props;
 
   const [data, setData] = useState([]);
   const [Id, setId] = useState(null);
@@ -24,11 +24,22 @@ const Form = (props) => {
     //       });
     //   };
     //   getData();
-  }, [todos]);
+  }, [todos, Id]);
 
-  const { handleSubmit, register, setValue, errors } = useForm();
+  const { handleSubmit, register, errors, setValue } = useForm();
   const onSubmit = (values, e) => {
-    addTodo(values);
+    if (Id !== null) {
+      const obj = {
+        Id,
+        values,
+      };
+      updateTodo(obj);
+      setId(null);
+    } else {
+      addTodo(values);
+    }
+    e.target.reset();
+    // addTodo(values);
     //   if (Id) {
     //     axios.put(`http://localhost:3000/List/${Id}`, values).then((response) => {
     //       console.log("berhasil update");
@@ -71,6 +82,18 @@ const Form = (props) => {
   };
 
   const onUpdate = (id) => {
+    setId(id);
+    const findItem = data.find((item) => item.id === id);
+    if (findItem) {
+      setValue("Day", findItem.Day, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      setValue("Activies", findItem.Activies, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
     // UpdateTodo(id);
     // axios.get(`http://localhost:3000/List/${id}`).then((response) => {
     //   setId(response.data.id);
@@ -104,7 +127,7 @@ const Form = (props) => {
           />
           <br />
           <button type="submit" className="btn btn-success">
-            {Id ? "update" : "Create"}
+            {Id !== null ? "update" : "Create"}
           </button>
         </form>
       </div>
@@ -124,7 +147,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addTodo: (value) => dispatch(addTodos(value)),
     deleteTodo: (id) => dispatch(DeleteTodos(id)),
-    updateTodo: (id) => dispatch(UpdateTodos(id)),
+    updateTodo: (value) => dispatch(UpdateTodos(value)),
   };
 };
 
